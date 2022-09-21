@@ -10,23 +10,23 @@ module.exports = {
   async login(req, res) {
     const { email, password } = req.body
     try {
-        const userData = await User.findOne({email});
-        if(!userData){
-            return res.status(400).json({
-                message : 'usuario no registrado',
-            })
-        }
-        if( !bcrypt.compareSync(password, userData.password) ){
-            return res.status(400).json({
-                message : 'no se pudo iniciar sesión, compruebe su información y vuelva a intentarlo',
-            })
-        }
-        //encriptar con jwt el id
-    
-        const jwtToken = utils.jwtEncode(userData._id)
-        return res.status(200).json({ jwtToken })
+      const userData = await User.findOne({ email });
+      if (!userData) {
+        return res.status(400).json({
+          message: 'usuario no registrado',
+        })
+      }
+      if (!bcrypt.compareSync(password, userData.password)) {
+        return res.status(400).json({
+          message: 'no se pudo iniciar sesión, compruebe su información y vuelva a intentarlo',
+        })
+      }
+      //encriptar con jwt el id
 
-        
+      const jwtToken = utils.jwtEncode(userData._id)
+      return res.status(200).json({ jwtToken })
+
+
     } catch (error) {
       return res.status(500).send({ message: error.message })
     }
@@ -48,21 +48,12 @@ module.exports = {
     }
   },
 
-  async getAll(req, res) {
+  async getUser(req, res) {
     try {
-      const { objectToMatch, exactMatch } = req.body
-      // si se envia exactMatch se retornaran solamente los registros cuyo nombre coincida exactamente con objectToMatch
-      if (exactMatch) {
-        const filteredRegisters = await User.find(objectToMatch).exec()
-        return res.status(200).json(filteredRegisters);
-      } else {
-        // buscamos todos los registros donde exista una coincidencia con el nombre
-        objectToMatch.email = new RegExp(objectToMatch.email, 'i')
-        const filteredRegisters = await User.find(objectToMatch).exec()
-        return res.status(200).json(filteredRegisters);
-      }
+      const { user } = req.body
+      return res.status(200).json(user);
     } catch (error) {
-      console.error('getAll::', error)
+      console.error('getUser::', error)
       return res.status(500).send({ message: error.message })
     }
   }
