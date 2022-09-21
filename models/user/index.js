@@ -1,6 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 const { Schema } = mongoose
 
 const schema = new Schema({
@@ -25,14 +26,10 @@ const schema = new Schema({
   registerDate: {type: Date, default: Date.now}
 })
 
+
 //Mensaje para emails repetidos
-schema.post('save', function(error, doc, next) {
-  if (error.name === 'MongoServerError' && error.code === 11000) {
-    next(new Error('El correo ya se encuentra registrado'));
-  } else {
-    next();
-  }
-});
+schema.plugin(uniqueValidator, {message: 'El {PATH} ya se encuentra registrado'});
+
 
 //ocultar paramentros del esquema para que no se le devuelvan al usuario
 schema.methods.toJSON = function () {
