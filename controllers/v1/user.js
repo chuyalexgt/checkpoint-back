@@ -8,9 +8,9 @@ const saltRounds = 10
 
 module.exports = {
   async login(req, res) {
-    const { username, password } = req.body
+    const { email, password } = req.body
     try {
-        const userData = await User.findOne({username});
+        const userData = await User.findOne({email});
         if(!userData){
             return res.status(400).json({
                 message : 'usuario no registrado',
@@ -18,7 +18,7 @@ module.exports = {
         }
         if( !bcrypt.compareSync(password, userData.password) ){
             return res.status(400).json({
-                message : 'no se pudo iniciar sesion, compruebe su informacion y vuelva a intentarlo',
+                message : 'no se pudo iniciar sesión, compruebe su información y vuelva a intentarlo',
             })
         }
         //encriptar con jwt el id
@@ -33,11 +33,11 @@ module.exports = {
   },
   async create(req, res) {
     try {
-      const { username, password } = req.body
+      const { email, password } = req.body
       //encrypta la contraseña
       const cryptedPassword = bcrypt.hashSync(password, saltRounds)
       //crea el usuario
-      const user = new User({ username, password: cryptedPassword })
+      const user = new User({ email, password: cryptedPassword })
       // guarda el usuario en db y ejecuta las validaciones del esquema
       await user.save()
 
@@ -57,7 +57,7 @@ module.exports = {
         return res.status(200).json(filteredRegisters);
       } else {
         // buscamos todos los registros donde exista una coincidencia con el nombre
-        objectToMatch.username = new RegExp(objectToMatch.username, 'i')
+        objectToMatch.email = new RegExp(objectToMatch.email, 'i')
         const filteredRegisters = await User.find(objectToMatch).exec()
         return res.status(200).json(filteredRegisters);
       }

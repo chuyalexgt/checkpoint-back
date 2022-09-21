@@ -1,31 +1,38 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const constants = require('./constants');
 const { Schema } = mongoose
 
 const schema = new Schema({
-  username: {
+  email: {
     type: String, 
     required: true, 
-    lowercase: true, 
     trim: true, 
     unique: true,
-    maxLength:15,
-    minLength: 5
+    validate: {
+      validator: function(v) {
+          const re = /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/;
+          return (!v || !v.trim().length) || re.test(v)
+      },
+      message: 'Formato de correo no válido'
+  }
   },
   password: {
     type: String, 
     required: true, 
     trim: true
   },
-  role: {
-    type: Number, 
-    default: constants.USUARIO,
-    enum: [constants.ADMIN, constants.EMPRESA, constants.USUARIO]
-  },
   registerDate: {type: Date, default: Date.now}
 })
+
+//Mensaje para emails repetidos
+schema.post('save', function(error, doc, next) {
+  if (error.name === 'MongoServerError' && error.code === 11000) {
+    next(new Error('El correo ya se encuentra registrado'));
+  } else {
+    next();
+  }
+});
 
 //ocultar paramentros del esquema para que no se le devuelvan al usuario
 schema.methods.toJSON = function () {

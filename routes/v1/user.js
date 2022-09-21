@@ -4,10 +4,10 @@ const router = require('express').Router();
 const controller = require('../../controllers/v1/user')
 const bodyValidator = require('../../middlewares/bodyValidator')
 
-router.post('/login', bodyValidator(['username', 'password']).isNotEmpty, controller.login)
+router.post('/login', bodyValidator(['email', 'password']).isNotEmpty, controller.login)
 
 router.post('/create',
-  bodyValidator(['username', 'password']).isNotEmpty,
+  bodyValidator(['email', 'password']).isNotEmpty,
   controller.create
 )
 
