@@ -9,8 +9,8 @@ module.exports = {
     sessionExpires.setMinutes(sessionExpires.getMinutes() + 5)
       const payload = {
         sub: data,
-        iat: sessionStart.getTime() / 1000,
-        exp: sessionExpires.getTime() / 1000
+        // iat: sessionStart.getTime() / 1000,
+        // exp: sessionExpires.getTime() / 1000
       }
       return jwt.encode(payload, process.env.JWT_SECRET_KEY)
   },
