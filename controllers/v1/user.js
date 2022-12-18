@@ -1,7 +1,8 @@
 'use strict';
 
 const utils = require('../../core/utils')
-const User = require('../../models/user/index')
+const {User} = require('../../models/user/index')
+const Post = require('../../models/post/index')
 const bcrypt = require('bcrypt');
 const saltRounds = 10
 
@@ -10,6 +11,7 @@ module.exports = {
   async login(req, res) {
     const { email, password } = req.body
     try {
+      
       const userData = await User.findOne({ email });
       if (!userData) {
         return res.status(400).json({
@@ -34,6 +36,7 @@ module.exports = {
   async create(req, res) {
     try {
       const { email, password } = req.body
+      console.log('asdsadasd')
       //encrypta la contraseña
       const cryptedPassword = bcrypt.hashSync(password, saltRounds)
       //crea el usuario
@@ -51,6 +54,20 @@ module.exports = {
   async getUser(req, res) {
     try {
       const { user } = req.body
+      return res.status(200).json(user);
+    } catch (error) {
+      console.error('getUser::', error)
+      return res.status(500).send({ message: error.message })
+    }
+  },
+
+  async createNewPost(req, res) {
+    try {
+      const { user, postData } = req.body
+      const {title, body, images} = postData
+      const post = new Post({author: user, title, body, images, likes: []})
+      console.log('getUser::',post)
+      User.addNewPost(post, user._id) 
       return res.status(200).json(user);
     } catch (error) {
       console.error('getUser::', error)

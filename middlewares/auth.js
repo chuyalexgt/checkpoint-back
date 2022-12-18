@@ -1,7 +1,7 @@
 'use strict';
 
 const utils = require('../core/utils');
-const User = require('../models/user/index')
+const {User} = require('../models/user/index')
 
 module.exports = {
   async isAuth(req, res, next) {

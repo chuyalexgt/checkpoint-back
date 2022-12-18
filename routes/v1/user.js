@@ -14,4 +14,6 @@ router.post('/create',
 
 router.get('/get', isAuth, controller.getUser)
 
+router.post('/createNewPost', isAuth, controller.createNewPost)
+
 module.exports = router

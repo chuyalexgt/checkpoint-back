@@ -24,6 +24,12 @@ const schema = new Schema({
     trim: true
   },
   registerDate: {type: Date, default: Date.now}
+}, {
+  methods: {
+    addNewPost(newPost, userId){
+      mongoose.model('user').findByIdAndUpdate(userId, newPost)
+    }
+  }
 })
 
 
@@ -38,4 +44,8 @@ schema.methods.toJSON = function () {
   return obj
 }
 
-module.exports = mongoose.model('user', schema)
+module.exports = {
+  User: mongoose.model('user', schema),
+  user : schema
+}
+ 
