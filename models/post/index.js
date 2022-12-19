@@ -9,14 +9,6 @@ const schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
-    get: (v) => {
-      console.log('getter::', v)
-      return {_id: v._id}
-    },    
-    set: (v) => {
-      console.log('setter::', v)
-      return {_id: v._id}
-    },
   },
   title: {type: String, required: true, trim: true,},
   images: [{url: String}],
