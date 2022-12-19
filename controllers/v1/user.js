@@ -77,7 +77,7 @@ module.exports = {
       const post = new Post({ author: user, title, body, images })
       post.save()
       console.log('getUser::', post)
-      user.addNewPost(post, user._id)
+      user.addNewPost(post._id, user._id)
       return res.status(200).json(post);
     } catch (error) {
       console.error('getUser::', error)

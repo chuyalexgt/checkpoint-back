@@ -13,6 +13,11 @@ const schema = new Schema({
   title: {type: String, required: true, trim: true,},
   images: [{url: String}],
   body: {type: String, required: true, trim:true},
+  likes: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    default: []
+  }]
 })
 
 module.exports = {
