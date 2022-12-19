@@ -7,7 +7,7 @@ const { Schema } = mongoose
 const schema = new Schema({
   creationDate: {type: Date, default: Date.now},
   author: {
-    type: Schema.types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User'
   },
   title: {type: String, required: true, trim: true,},
