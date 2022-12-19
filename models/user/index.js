@@ -45,7 +45,7 @@ schema.methods.toJSON = function () {
 }
 
 module.exports = {
-  User: mongoose.model('user', schema),
+  User: mongoose.model('User', schema),
   user : schema
 }
  

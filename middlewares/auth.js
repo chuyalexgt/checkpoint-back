@@ -12,6 +12,7 @@ module.exports = {
       try {
         const { sub } = utils.jwtDecode(token)
         const user = await User.findById(sub).exec()
+        console.log(sub)
         req.body.user = user
         if (user) return next()
       } catch (error) {

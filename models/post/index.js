@@ -6,7 +6,10 @@ const { Schema } = mongoose
 
 const schema = new Schema({
   creationDate: {type: Date, default: Date.now},
-  author: user,
+  author: {
+    type: Schema.types.ObjectId,
+    ref: 'User'
+  },
   title: {type: String, required: true, trim: true,},
   images: [{url: String}],
   body: {type: String, required: true, trim:true},
@@ -22,6 +25,6 @@ const schema = new Schema({
 
 
 module.exports = {
-  Post: mongoose.model('post', schema),
+  Post: mongoose.model('Post', schema),
   post: schema
 } 
