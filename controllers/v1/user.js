@@ -35,12 +35,12 @@ module.exports = {
   },
   async create(req, res) {
     try {
-      const { email, password } = req.body
+      const { email, password, nickname } = req.body
       console.log('asdsadasd')
       //encrypta la contraseña
       const cryptedPassword = bcrypt.hashSync(password, saltRounds)
       //crea el usuario
-      const user = new User({ email, password: cryptedPassword })
+      const user = new User({ email, password: cryptedPassword, nickname })
       // guarda el usuario en db y ejecuta las validaciones del esquema
       await user.save()
 
@@ -63,7 +63,6 @@ module.exports = {
 
   async createNewPost(req, res) {
     try {
-      console.log(req.body)
       const { user, postData } = req.body
       if (!postData?.title) {
         return res.status(500).send({ message: 'falta [title]' })
@@ -75,11 +74,11 @@ module.exports = {
         postData.images = []
       }
       const { title, body, images } = postData
-      const post = new Post({ author: user, title, body, images, likes: [] })
+      const post = new Post({ author: user, title, body, images })
       post.save()
       console.log('getUser::', post)
       user.addNewPost(post, user._id)
-      return res.status(200).json(user);
+      return res.status(200).json(post);
     } catch (error) {
       console.error('getUser::', error)
       return res.status(500).send({ message: error.message })

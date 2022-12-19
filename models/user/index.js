@@ -23,11 +23,18 @@ const schema = new Schema({
     required: true, 
     trim: true
   },
+  nickname: {
+    type: String, 
+    required: true, 
+    trim: true,
+    unique: true,
+
+  },
   registerDate: {type: Date, default: Date.now}
 }, {
   methods: {
     addNewPost(newPost, userId){
-      mongoose.model('user').findByIdAndUpdate(userId, newPost)
+      mongoose.model('User').findByIdAndUpdate(userId, newPost)
     }
   }
 })

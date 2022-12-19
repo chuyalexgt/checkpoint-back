@@ -8,7 +8,7 @@ const {isAuth} = require('../../middlewares/auth')
 router.post('/login', bodyValidator(['email', 'password']).isNotEmpty, controller.login)
 
 router.post('/create',
-  bodyValidator(['email', 'password']).isNotEmpty,
+  bodyValidator(['email', 'password', 'nickname']).isNotEmpty,
   controller.create
 )
 
