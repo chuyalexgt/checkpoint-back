@@ -10,24 +10,27 @@ const schema = new Schema({
     ref: 'User',
     required: true,
   },
-  title: { type: String, required: true, trim: true, },
-  images: [{ url: String }],
+  repliedTo: {
+    type: Schema.Types.ObjectId,
+    ref: 'Post',
+    required: true,
+  },
   body: { type: String, required: true, trim: true },
   likes: [{
     type: Schema.Types.ObjectId,
     ref: 'User',
     default: []
   }],
-  comments: [
+  replies: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Comment',
+      ref: 'Reply',
       default: []
     }
   ]
 })
 
 module.exports = {
-  Post: mongoose.model('Post', schema),
-  post: schema
+  Comment: mongoose.model('Comment', schema),
+  comment: schema
 } 
