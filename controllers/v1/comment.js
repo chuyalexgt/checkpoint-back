@@ -66,7 +66,7 @@ module.exports = {
   async allRepliesByCommentId(req, res) {
     const { commentId } = req.params
     try {
-      const repliesList = Comment.findById(commentId, 'replies').populate('replies').exec()
+      const repliesList = await Comment.findById(commentId, 'replies').populate('replies').exec()
       return res.status(200).json({ repliesList })
     } catch (error) {
       return res.status(500).send({ message: error.message })
