@@ -2,21 +2,18 @@
 
 const utils = require('../../core/utils')
 const { User, user } = require('../../models/user/index')
-const {Post} = require('../../models/post/index')
+const { Post } = require('../../models/post/index')
 
 
 module.exports = {
   async getLikesByPostId(req, res) {
-    const { id } = req.query
+    const { id } = req.params
     try {
-
-      const postData = await Post.findById(id).select('likes').populate({
-        path: 'post',
-        model: 'Post'
-      }).exec();
+      console.log('getLikes::', id)
+      const postData = await Post.findById(id, 'likes').populate('likes').exec();
       if (!postData) {
         return res.status(400).json({
-          message: 'publicación no encontrado',
+          message: 'publicación no encontrada',
         })
       }
       return res.status(200).json(postData)
@@ -27,25 +24,23 @@ module.exports = {
     }
   },
 
-  async addLikeByPostId(req, res) {
-    const { email, password } = req.body
+  async toggleLikeByPostId(req, res) {
+    const { postId } = req.params
+    const { _id: userId } = req.body.user
     try {
-
-      const userData = await User.findOne({ email });
-      if (!userData) {
+      const postData = await Post.findById(postId);
+      if (!postData) {
         return res.status(400).json({
-          message: 'usuario no registrado',
+          message: 'publicación no encontrada',
         })
       }
-      if (!bcrypt.compareSync(password, userData.password)) {
-        return res.status(400).json({
-          message: 'no se pudo iniciar sesión, compruebe su información y vuelva a intentarlo',
-        })
+      if (postData.likes.includes(userId)) {
+        const updatedPost = await Post.findByIdAndUpdate(postId, { $pull: { likes: userId } }, { new: true })
+        return res.status(200).json({ updatedPost })
+      } else {
+        const updatedPost = await Post.findByIdAndUpdate(postId, { $push: { likes: userId } }, { new: true })
+        return res.status(200).json({ updatedPost })
       }
-      //encriptar con jwt el id
-
-      const jwtToken = utils.jwtEncode(userData._id)
-      return res.status(200).json({ jwtToken })
 
 
     } catch (error) {

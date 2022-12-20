@@ -6,6 +6,6 @@ const controller = require('../../controllers/v1/post')
 const {isAuth} = require('../../middlewares/auth')
 
 router.get('/likes/byPostId/:id', isAuth, controller.getLikesByPostId)
-router.post('/add/like/byPostId/:id', isAuth, controller.addLikeByPostId)
+router.post('/toggle/like/byPostId/:postId', isAuth, controller.toggleLikeByPostId)
 
 module.exports = router
