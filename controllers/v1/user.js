@@ -2,7 +2,7 @@
 
 const utils = require('../../core/utils')
 const { User, user } = require('../../models/user/index')
-const {Post} = require('../../models/post/index')
+const { Post } = require('../../models/post/index')
 const bcrypt = require('bcrypt');
 const saltRounds = 10
 
@@ -83,6 +83,65 @@ module.exports = {
       console.error('getUser::', error)
       return res.status(500).send({ message: error.message })
     }
-  }
+  },
+
+  async UpdateUserByBody(req, res) {
+    try {
+      const { _id: userId } = req.body.user
+      // el nickname y el usuario no se pueden cambiar asi que los quitamos del body 
+      delete req.body.nickname
+      delete req.body.email
+      delete req.body.user
+      const userBody = req.body
+      console.log(userBody)
+      if (!userId) {
+        return res.status(500).send({ message: 'Se necesita el ID del usuario' })
+      }
+      const updatedUser = await User.findByIdAndUpdate(userId,
+        {
+          $set: userBody,
+        },
+        {
+          new: true,
+        }
+      )
+      return res.status(200).json(updatedUser);
+    } catch (error) {
+      console.error('getUser::', error)
+      return res.status(500).send({ message: error.message })
+    }
+  },
+
+  async changePassword(req, res) {
+    try {
+      const { oldPassword, newPassword } = req.body
+      const { _id: userId } = req.body.user
+
+      const userData = await User.findById(userId);
+      if (!userData) {
+        return res.status(400).json({
+          message: 'usuario no registrado',
+        })
+      }
+      if (oldPassword === newPassword) {
+        return res.status(400).json({
+          message: 'La nueva contraseña no puede ser igual a la anterior',
+        })
+      }
+      if (!bcrypt.compareSync(oldPassword, userData.password)) {
+        return res.status(400).json({
+          message: 'la contraseña es incorrecta',
+        })
+      }
+      const encryptedNewPass = bcrypt.hashSync(newPassword, saltRounds)
+      userData.set('password', encryptedNewPass)
+      await userData.save()
+      return res.status(200).json(userData);
+
+    } catch (error) {
+      console.error('getUser::', error)
+      return res.status(500).send({ message: error.message })
+    }
+  },
 }
 
